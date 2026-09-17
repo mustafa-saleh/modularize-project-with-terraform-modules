@@ -126,20 +126,20 @@ Before you begin, make sure the following are available:
 
 The official Terraform installation documentation can be found here: https://developer.hashicorp.com/terraform/downloads
 
-```sh
+```bash
 brew tap hashicorp/tap
 brew install hashicorp/tap/terraform
 ```
 
 #### Configure AWS credentials
 
-```sh
+```bash
 aws configure
 ```
 
 #### Create an SSH key pair
 
-```sh
+```bash
 ssh-keygen -t rsa -b 4096
 ```
 
@@ -149,7 +149,7 @@ The public key path is referenced by `public_key_location` in `terraform.tfvars`
 
 The sample variable file is [example.tfvars](example.tfvars):
 
-```hcl
+```terraform
 # Update these values to match your AWS setup and workstation IP
 vpc_cidr_block     = "10.0.0.0/16"
 subnet_cidr_block  = "10.0.10.0/24"
@@ -165,7 +165,7 @@ These values are loaded automatically from `terraform.tfvars` during deployment.
 
 #### Initialize Terraform
 
-```sh
+```bash
 terraform init
 ```
 
@@ -175,7 +175,7 @@ This downloads the AWS provider and prepares the working directory for the root 
 
 The root configuration in [main.tf](main.tf) wires the project together:
 
-```hcl
+```terraform
 provider "aws" {
   region = "us-east-1"
 }
@@ -220,7 +220,7 @@ The child module contracts are defined through their input variables and outputs
 
 The subnet module groups the network resources that should always be created together:
 
-```hcl
+```terraform
 resource "aws_subnet" "myapp-subnet-1" {
   vpc_id = var.vpc_id
   cidr_block = var.subnet_cidr_block
@@ -256,7 +256,7 @@ This module keeps the public networking logic isolated from the compute logic, w
 
 The webserver module handles the compute and access controls:
 
-```hcl
+```terraform
 resource "aws_default_security_group" "default-sg" {
   vpc_id = var.vpc_id
 
@@ -339,7 +339,7 @@ docker run -p 8080:80 nginx
 
 Use the standard Terraform workflow from the notes file:
 
-```sh
+```bash
 terraform init
 terraform plan
 terraform apply
@@ -348,7 +348,7 @@ terraform destroy
 
 The other useful commands from the notes are:
 
-```sh
+```bash
 terraform state
 terraform state list
 terraform state show myapp-subnet-1
@@ -362,7 +362,7 @@ After `terraform apply`, verify the result in both AWS and the browser.
 
 Example access flow:
 
-```sh
+```bash
 ssh -i ~/.ssh/id_rsa ec2-user@<PUBLIC_IP>
 ```
 
